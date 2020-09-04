@@ -1,0 +1,42 @@
+group 'com.enerbrain.nfc_st25'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
+dependencies {
+    implementation files('src/libs/st25sdk-1.6.0.jar')
+    implementation files('src/libs/reader_interface.jar')
+
+    // Needed by ST25 SDK
+    implementation 'org.apache.commons:commons-lang3:3.5'
+}

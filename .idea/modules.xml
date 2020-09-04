@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/nfc_st25.iml" filepath="$PROJECT_DIR$/nfc_st25.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/nfc_st25_android.iml" filepath="$PROJECT_DIR$/android/nfc_st25_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/example/android/nfc_st25_example_android.iml" filepath="$PROJECT_DIR$/example/android/nfc_st25_example_android.iml" />
+    </modules>
+  </component>
+</project>
