@@ -56,6 +56,11 @@ class MailBox {
   bool msgMissByController;
   bool msgMissByNfc;
 
+  @override
+  String toString() {
+    return " mailboxEnabled: $mailboxEnabled\n msgPutByController: $msgPutByController\n msgPutByNfc: $msgPutByNfc\n msgMissByController: $msgMissByController\n msgMissByNfc:$msgMissByNfc \n ";
+  }
+
   factory MailBox.fromJson(String str) => MailBox.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());

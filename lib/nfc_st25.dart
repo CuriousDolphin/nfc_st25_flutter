@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:ffi';
 import 'dart:typed_data';
 
@@ -7,6 +8,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:nfc_st25/utils/nfc_st25_tag.dart';
+import 'package:nfc_st25/utils/nfc_st25_tag.dart';
+
+import 'utils/nfc_st25_tag.dart';
 
 class NfcSt25 {
   static const MethodChannel _channel = const MethodChannel('nfc_st25');
@@ -34,6 +38,11 @@ class NfcSt25 {
   static Future<String> resetMailBox() async {
     final String ris = await _channel.invokeMethod('resetMailbox');
     return ris;
+  }
+
+  static Future<MailBox> getMailBoxInfo() async {
+    Map<dynamic, dynamic> map = await _channel.invokeMethod('getMailboxInfo');
+    return MailBox.fromMap(map);
   }
 
   static Future<String> writeMailBoxByte(Uint8List msg) async {

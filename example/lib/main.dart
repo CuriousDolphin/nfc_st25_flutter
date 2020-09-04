@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -19,9 +20,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   bool nfcAvailability;
-  St25Tag lastTag = null;
+  St25Tag lastTag;
   bool loading = false;
   Uint8List last_msg = null;
+  String logs = "";
+  MailBox mailBoxInfo = null;
 
   // needed for snackbar
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -34,10 +37,12 @@ class _MyAppState extends State<MyApp> {
     try {
       StreamSubscription<St25Tag> subscription =
           NfcSt25.startReading().listen((tag) {
-        print("NEW TAG FOUND: " + tag.toJson());
+        print("NEW TAG FOUND: " + tag.uid);
+        log("TAG FOUND: " + tag.uid);
         //showSnackBar("Tag found " + tag.uid, false);
         setState(() {
           lastTag = tag;
+          mailBoxInfo = tag.mailBox;
         });
       });
 
@@ -67,6 +72,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void log(String s) {
+    setState(() {
+      logs += s + '\n';
+    });
+  }
+
   Future<void> readMailBoxMsg() async {
     setState(() {
       loading = true;
@@ -77,11 +88,12 @@ class _MyAppState extends State<MyApp> {
       msg = await NfcSt25.readMailbox;
       last_msg = msg;
       print("READ MSG " + msg.length.toString() + "_" + msg.toString());
-      showSnackBar(
-          "READ MSG " + msg.length.toString() + "_" + msg.toString(), false);
+      // showSnackBar( "READ MSG " + msg.length.toString() + "_" + msg.toString(), false);
+      log("READ MSG " + msg.length.toString() + "_" + msg.toString());
     } catch (e) {
       print("ERRRRORRR reading msg" + e.toString());
-      showSnackBar("failed to read mailbox -> " + e.toString(), true);
+      //showSnackBar("failed to read mailbox -> " + e.toString(), true);
+      log("failed to read mailbox -> " + e.toString());
       setState(() {
         last_msg = null;
       });
@@ -97,10 +109,32 @@ class _MyAppState extends State<MyApp> {
     try {
       await NfcSt25.resetMailBox();
       print("SUCCESSFUL RESET MAILBOX");
-      showSnackBar("SUCCESSFUL RESET MAILBOX", false);
+      //showSnackBar("SUCCESSFUL RESET MAILBOX", false);
+      log("SUCCESSFUL RESET MAILBOX");
     } catch (e) {
+      log("ERRRRORRR reset mailbox" + e.toString());
       print("ERRRRORRR reset mailbox" + e.toString());
-      showSnackBar("failed to reset mailbox -> " + e.toString(), true);
+      //showSnackBar("failed to reset mailbox -> " + e.toString(), true);
+    }
+  }
+
+  Future<void> getMailBoxInfo() async {
+    MailBox mailbox;
+    try {
+      mailbox = await NfcSt25.getMailBoxInfo();
+      print("GET MAILBOX INFO" + mailbox.toString());
+      //showSnackBar("SUCCESSFUL RESET MAILBOX", false);
+      log("GET MAILBOX INFO :\n" + mailbox.toString());
+      setState(() {
+        mailBoxInfo = mailbox;
+      });
+    } catch (e) {
+      setState(() {
+        mailBoxInfo = null;
+      });
+      log("ERRRRORRR get mailbox info" + e.toString());
+      print("ERRRRORRR get mailbox info" + e.toString());
+      //showSnackBar("failed to reset mailbox -> " + e.toString(), true);
     }
   }
 
@@ -109,10 +143,10 @@ class _MyAppState extends State<MyApp> {
     try {
       await NfcSt25.writeMailBoxByte(msg);
       print("SUCCESSFUL SENT " + msg.toString());
-      showSnackBar("SUCCESSFUL SENT " + msg.toString(), false);
+      log("SUCCESSFUL SENT " + msg.toString());
     } catch (e) {
       print("ERRRRORRR writing msg" + e.toString());
-      showSnackBar("failed to write mailbox -> " + e.toString(), true);
+      log("failed to write mailbox -> " + e.toString());
     }
   }
 
@@ -142,37 +176,60 @@ class _MyAppState extends State<MyApp> {
       body: lastTag == null
           ? Center(
               child: Text(
-                  'Running on: $_platformVersion\n Nfc availability: $nfcAvailability \n '),
+                  'Running on: $_platformVersion\n Nfc availability: $nfcAvailability \n PLEASE TAP A NFC TAG. '),
             )
           : Padding(
               padding: EdgeInsets.all(16),
               child: Center(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text("TAG INFO"),
+                    Text(lastTag.name + ' ' + lastTag.uid),
+                    SizedBox(height: 25),
+                    Text("MAILBOX INFO"),
                     Container(
-                      child: Text(lastTag.toJson()),
+                      child: Text(mailBoxInfo.toString()),
                       color: Colors.grey,
                     ),
-                    FlatButton(
-                      child: Text("READ MAILBOX"),
-                      onPressed: () => lastTag.mailBox.mailboxEnabled == false
-                          ? null
-                          : readMailBoxMsg(),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RaisedButton(
+                            child: Text("MAILBOX INFO"),
+                            onPressed: () => getMailBoxInfo(),
+                          ),
+                          RaisedButton(
+                            child: Text("RESET MAILBOX"),
+                            onPressed: () => resetMailBox(),
+                          ),
+                        ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RaisedButton(
+                            child: Text("READ MAILBOX"),
+                            onPressed: () =>
+                                lastTag.mailBox.mailboxEnabled == false
+                                    ? null
+                                    : readMailBoxMsg(),
+                          ),
+                          RaisedButton(
+                            child: Text("WRITE MAILBOX"),
+                            onPressed: () =>
+                                lastTag.mailBox.mailboxEnabled == false
+                                    ? null
+                                    : writeMailBoxMsg(),
+                          ),
+                        ]),
+                    SizedBox(height: 25),
+                    Text("LOGS"),
+                    Container(
+                      height: 300,
+                      child: ListView(
+                        children: <Widget>[Text(logs)],
+                      ),
+                      color: Colors.grey,
                     ),
-                    FlatButton(
-                      child: Text("WRITE MAILBOX"),
-                      onPressed: () => lastTag.mailBox.mailboxEnabled == false
-                          ? null
-                          : writeMailBoxMsg(),
-                    ),
-                    FlatButton(
-                      child: Text("RESET MAILBOX"),
-                      onPressed: () => lastTag.mailBox.mailboxEnabled == false
-                          ? null
-                          : resetMailBox(),
-                    ),
-                    Text(last_msg.toString())
                   ],
                 ),
               ),

@@ -9,15 +9,33 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="89de1355-eb63-4f10-85e9-c9a407b9c756" name="Default Changelist" comment="" />
+    <list default="true" id="89de1355-eb63-4f10-85e9-c9a407b9c756" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/enerbrain/nfc_st25/NfcSt25Plugin.java" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/enerbrain/nfc_st25/NfcSt25Plugin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/example/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nfc_st25.iml" beforeDir="false" afterPath="$PROJECT_DIR$/nfc_st25.iml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_27" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="bacdc5bc" />
   <component name="FavoritesManager">
     <favorites_list name="nfc_st25_flutter_plugin" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="C:\Users\isnob\Documents\workspace\nfc_st25_flutter\.idea" />
+      </set>
+    </option>
   </component>
   <component name="ProjectId" id="1gdpMLLBHRjPQ9Y5kRpftczdSr9" />
   <component name="ProjectViewState">
@@ -29,9 +47,10 @@
     <property name="DeviceAndSnapshotComboBoxAction.selectedDevice" value="bacdc5bc" />
     <property name="DeviceAndSnapshotComboBoxAction.selectionTime" value="2020-08-28T13:05:39.146Z" />
     <property name="ResourceManagerPrefKey.ResourceType" value="MIPMAP" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/android/src/libs" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -49,7 +68,7 @@
       <recent name="$PROJECT_DIR$/android/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Flutter.Unnamed">
+  <component name="RunManager" selected="Android App.Unnamed">
     <configuration name="Unnamed" type="AndroidRunConfigurationType" factoryName="Android App" nameIsGenerated="true">
       <module name="nfc_st25_example_android" />
       <option name="DEPLOY" value="true" />
@@ -134,6 +153,19 @@
     </task>
     <servers />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="WindowStateProjectService">
     <state x="1088" y="530" key="#PSD" timestamp="1598619430093">
       <screen x="0" y="23" width="3440" height="1359" />
@@ -159,39 +191,44 @@
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
     <state x="2168" y="464" key="AndroidCreateResourceFileDialog/0.23.3440.1359@0.23.3440.1359" timestamp="1598613536703" />
-    <state width="1774" height="314" key="GridCell.Tab.0.bottom" timestamp="1598620233851">
-      <screen x="0" y="23" width="3440" height="1359" />
+    <state width="1340" height="224" key="GridCell.Tab.0.bottom" timestamp="1599210760074">
+      <screen x="0" y="0" width="3440" height="1400" />
     </state>
+    <state width="1340" height="224" key="GridCell.Tab.0.bottom/0.0.3440.1400@0.0.3440.1400" timestamp="1599210760074" />
     <state width="1164" height="168" key="GridCell.Tab.0.bottom/0.23.1440.823@0.23.1440.823" timestamp="1598458880368" />
     <state width="1774" height="314" key="GridCell.Tab.0.bottom/0.23.3440.1359@0.23.3440.1359" timestamp="1598620233851" />
-    <state width="1774" height="314" key="GridCell.Tab.0.center" timestamp="1598620233850">
-      <screen x="0" y="23" width="3440" height="1359" />
+    <state width="1340" height="224" key="GridCell.Tab.0.center" timestamp="1599210760074">
+      <screen x="0" y="0" width="3440" height="1400" />
     </state>
+    <state width="1340" height="224" key="GridCell.Tab.0.center/0.0.3440.1400@0.0.3440.1400" timestamp="1599210760074" />
     <state width="1164" height="168" key="GridCell.Tab.0.center/0.23.1440.823@0.23.1440.823" timestamp="1598458880366" />
     <state width="1774" height="314" key="GridCell.Tab.0.center/0.23.3440.1359@0.23.3440.1359" timestamp="1598620233850" />
-    <state width="1774" height="314" key="GridCell.Tab.0.left" timestamp="1598620233849">
-      <screen x="0" y="23" width="3440" height="1359" />
+    <state width="1340" height="224" key="GridCell.Tab.0.left" timestamp="1599210760073">
+      <screen x="0" y="0" width="3440" height="1400" />
     </state>
+    <state width="1340" height="224" key="GridCell.Tab.0.left/0.0.3440.1400@0.0.3440.1400" timestamp="1599210760073" />
     <state width="1164" height="168" key="GridCell.Tab.0.left/0.23.1440.823@0.23.1440.823" timestamp="1598458880366" />
     <state width="1774" height="314" key="GridCell.Tab.0.left/0.23.3440.1359@0.23.3440.1359" timestamp="1598620233849" />
-    <state width="1774" height="314" key="GridCell.Tab.0.right" timestamp="1598620233851">
-      <screen x="0" y="23" width="3440" height="1359" />
+    <state width="1340" height="224" key="GridCell.Tab.0.right" timestamp="1599210760074">
+      <screen x="0" y="0" width="3440" height="1400" />
     </state>
+    <state width="1340" height="224" key="GridCell.Tab.0.right/0.0.3440.1400@0.0.3440.1400" timestamp="1599210760074" />
     <state width="1164" height="168" key="GridCell.Tab.0.right/0.23.1440.823@0.23.1440.823" timestamp="1598458880367" />
     <state width="1774" height="314" key="GridCell.Tab.0.right/0.23.3440.1359@0.23.3440.1359" timestamp="1598620233851" />
     <state x="1865" y="341" key="SettingsEditor" timestamp="1598620042339">
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
     <state x="1865" y="341" key="SettingsEditor/0.23.3440.1359@0.23.3440.1359" timestamp="1598620042339" />
-    <state x="390" y="266" key="com.intellij.ide.util.TipDialog" timestamp="1598859195720">
-      <screen x="0" y="23" width="1440" height="821" />
+    <state x="932" y="414" key="com.intellij.ide.util.TipDialog" timestamp="1599210714224">
+      <screen x="0" y="0" width="3440" height="1400" />
     </state>
+    <state x="932" y="414" key="com.intellij.ide.util.TipDialog/0.0.3440.1400@0.0.3440.1400" timestamp="1599210714224" />
     <state x="390" y="266" key="com.intellij.ide.util.TipDialog/0.23.1440.821@0.23.1440.821" timestamp="1598859195720" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/android/build.gradle</url>
           <line>14</line>
           <option name="timeStamp" value="1" />

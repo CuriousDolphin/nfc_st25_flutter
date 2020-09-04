@@ -60,6 +60,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
     READ_FAST_MEMORY,
     WRITE_MAIL_BOX,
     GET_INFO,
+    GET_MAILBOX_INFO,
     READ_MAIL_BOX,
     RESET_MAIL_BOX,
 
@@ -125,9 +126,13 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
         break;
       case "startReading":
         startReading();
+        //startReadingWithForegroundDispatch();
         break;
       case "readMailbox":
         executeAsynchronousAction(Action.READ_MAIL_BOX,result,null);
+        break;
+      case "getMailboxInfo":
+        executeAsynchronousAction(Action.GET_MAILBOX_INFO, result,null);
         break;
       case "writeMailbox":
         executeAsynchronousAction(Action.WRITE_MAIL_BOX,result,call.arguments);
@@ -287,6 +292,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
     byte[] mailBoxMsg=null;
     // data to write
     Object requestData = null;
+    HashMap<String,Boolean> mailbox = null;
 
 
     HashMap<String, Object> tagMap = new HashMap<>();
@@ -300,20 +306,28 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
     }
 
     void getInfo() throws STException {
-      HashMap<String, Boolean> mail_box = new HashMap<>();
       tagMap = new HashMap<>();
       tagMap.put("name",lastTag.getName());
       tagMap.put("description",lastTag.getDescription());
       tagMap.put("uid",lastTag.getUidString());
       tagMap.put("memory_size",lastTag.getMemSizeInBytes());
-      mail_box.put("mailbox_enabled",lastTag.isMailboxEnabled(false));
-      mail_box.put("msg_put_by_controller",lastTag.hasHostPutMsg(false));
-      mail_box.put("msg_put_by_nfc",lastTag.hasRFPutMsg(false));
-      mail_box.put("msg_miss_by_controller",lastTag.hasHostMissMsg(false));
-      mail_box.put("msg_miss_by_nfc",lastTag.hasRFMissMsg(false));
+
+      HashMap<String, Boolean> mail_box = getMailboxInfo();
+
       tagMap.put("mail_box",mail_box);
 
     }
+
+    HashMap<String,Boolean> getMailboxInfo() throws  STException {
+      HashMap<String, Boolean> mail_box = new HashMap<>();
+      mail_box.put("mailbox_enabled",lastTag.isMailboxEnabled(true));
+      mail_box.put("msg_put_by_controller",lastTag.hasHostPutMsg(true));
+      mail_box.put("msg_put_by_nfc",lastTag.hasRFPutMsg(true));
+      mail_box.put("msg_miss_by_controller",lastTag.hasHostMissMsg(true));
+      mail_box.put("msg_miss_by_nfc",lastTag.hasRFMissMsg(true));
+      return mail_box;
+    }
+
 
     /*void readMailbox() throws STException {
       boolean isFull=lastTag.hasRFPutMsg(true) || lastTag.hasHostPutMsg(true);
@@ -350,12 +364,12 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
             result = ActionStatus.ACTION_SUCCESSFUL;
             break;
           case WRITE_MAIL_BOX:
-            isFull=lastTag.hasRFPutMsg(false) || lastTag.hasHostPutMsg(false);
+            isFull=lastTag.hasRFPutMsg(true) || lastTag.hasHostPutMsg(true);
             if(!isFull){
               byte[] var =(byte[]) requestData;
 
               Log.i("nfc","WRITE MAILBOX GOING TO SEND "+var.toString());
-              lastTag.writeMailboxMessage(var);
+              lastTag.writeMailboxMessage(var) ;// writeMailboxMessage(var);
               result = ActionStatus.ACTION_SUCCESSFUL;
             }else{
               {
@@ -367,7 +381,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
             break;
           case READ_MAIL_BOX:
 
-             isFull=lastTag.hasRFPutMsg(false) || lastTag.hasHostPutMsg(false);
+             isFull=lastTag.hasRFPutMsg(true) || lastTag.hasHostPutMsg(true);
             if(isFull){
               int size = lastTag.readMailboxMessageLength();
               Log.i("nfc", "READ MSG LENGTH " + size);
@@ -391,8 +405,11 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
             // If we get to this point, it means that no STException occured so the action was successful
             result = ActionStatus.ACTION_SUCCESSFUL;
             break;
+          case GET_MAILBOX_INFO:
+            mailbox=getMailboxInfo();
+            result = ActionStatus.ACTION_SUCCESSFUL;
 
-
+            break;
           default:
             result = ActionStatus.ACTION_FAILED;
             break;
@@ -431,6 +448,10 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
             case GET_INFO:
                 Log.i("nfc","SUCCESFULL READ TAG "+ tagMap.toString());
                 eventSuccess(tagMap);
+              break;
+            case GET_MAILBOX_INFO:
+              Log.i("nfc","SUCCESFULL READ MAILBOX INFO "+ mailbox.toString());
+              mResult.success(mailbox);
               break;
 
             case WRITE_NDEF_MESSAGE:
