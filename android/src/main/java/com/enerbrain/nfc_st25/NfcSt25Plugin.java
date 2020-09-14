@@ -190,8 +190,8 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
   public void onTagDiscoveryCompleted(NFCTag nfcTag, TagHelper.ProductID productId, STException error) {
     Log.i("nfc","ON DISCOVERY COMPLETED " );
     if (error != null) {
-      // TODO HANDLE ERROR
-       //Toast.makeText(getApplication(), "Error while reading the tag: " + error.toString(), Toast.LENGTH_LONG).show();
+      Log.i("nfc","ON DISCOVERY ERROR " );
+      eventError("DISCOVERY_FAILED",error.getMessage(),null);
       return;
     }
 
@@ -227,7 +227,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
       }*/
 
     } else {
-     // eventError("discovery failed","tag discovery failed or unsupported",null);
+      eventError("DISCOVERY_FAILED","tag discovery failed or unsupported device",null);
       Log.i("nfc","tag discovery failed or unsupported device");
     }
   }
@@ -276,7 +276,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
   @Override
   public void onCancel(Object arguments) {
     Log.i("nfc","stream on cancel");
-    events =null;
+     events =null;
   }
 
 

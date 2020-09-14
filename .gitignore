@@ -6,3 +6,5 @@
 
 build/
 .vscode/launch.json
+pubspec.lock
+example/pubspec.lock

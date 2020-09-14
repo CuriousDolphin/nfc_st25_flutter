@@ -8,7 +8,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:nfc_st25/utils/nfc_st25_tag.dart';
-import 'package:nfc_st25/utils/nfc_st25_tag.dart';
 
 import 'utils/nfc_st25_tag.dart';
 
@@ -74,7 +73,8 @@ class NfcSt25 {
           return;
         }*/
         controller.addError(error);
-        controller.close();
+
+        //controller.close();
       },
       onDone: () {
         _tagStream = null;

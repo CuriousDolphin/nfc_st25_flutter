@@ -22,9 +22,11 @@ class _MyAppState extends State<MyApp> {
   bool nfcAvailability;
   St25Tag lastTag;
   bool loading = false;
-  Uint8List last_msg = null;
+  Uint8List last_msg;
   String logs = "";
-  MailBox mailBoxInfo = null;
+  MailBox mailBoxInfo;
+
+  StreamSubscription<St25Tag> _subscription;
 
   // needed for snackbar
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -34,22 +36,18 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initPlatformState();
     NfcSt25.nfcAvailability.then((value) => {nfcAvailability = value});
-    try {
-      StreamSubscription<St25Tag> subscription =
-          NfcSt25.startReading().listen((tag) {
-        print("NEW TAG FOUND: " + tag.uid);
-        log("TAG FOUND: " + tag.uid);
-        //showSnackBar("Tag found " + tag.uid, false);
-        setState(() {
-          lastTag = tag;
-          mailBoxInfo = tag.mailBox;
-        });
-      });
+    startListen();
+  }
 
-      subscription.onError((e) => print("ERROR ON DISCOVERY " + e.toString()));
-    } catch (e) {
-      print("ERRRRORRR" + e.toString());
-    }
+  startListen() {
+    _subscription = NfcSt25.startReading().listen((tag) {
+      log("TAG FOUND: " + tag.uid);
+      //showSnackBar("Tag found " + tag.uid, false);
+      setState(() {
+        lastTag = tag;
+        mailBoxInfo = tag.mailBox;
+      });
+    }, onError: (e) => log(e.toString()));
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -73,8 +71,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   void log(String s) {
+    print(s);
     setState(() {
-      logs += s + '\n';
+      logs += s + '\n\n';
     });
   }
 
@@ -87,12 +86,8 @@ class _MyAppState extends State<MyApp> {
     try {
       msg = await NfcSt25.readMailbox;
       last_msg = msg;
-      print("READ MSG " + msg.length.toString() + "_" + msg.toString());
-      // showSnackBar( "READ MSG " + msg.length.toString() + "_" + msg.toString(), false);
       log("READ MSG " + msg.length.toString() + "_" + msg.toString());
     } catch (e) {
-      print("ERRRRORRR reading msg" + e.toString());
-      //showSnackBar("failed to read mailbox -> " + e.toString(), true);
       log("failed to read mailbox -> " + e.toString());
       setState(() {
         last_msg = null;
@@ -108,12 +103,9 @@ class _MyAppState extends State<MyApp> {
   Future<void> resetMailBox() async {
     try {
       await NfcSt25.resetMailBox();
-      print("SUCCESSFUL RESET MAILBOX");
-      //showSnackBar("SUCCESSFUL RESET MAILBOX", false);
       log("SUCCESSFUL RESET MAILBOX");
     } catch (e) {
-      log("ERRRRORRR reset mailbox" + e.toString());
-      print("ERRRRORRR reset mailbox" + e.toString());
+      log("Error reset mailbox" + e.toString());
       //showSnackBar("failed to reset mailbox -> " + e.toString(), true);
     }
   }
@@ -122,7 +114,6 @@ class _MyAppState extends State<MyApp> {
     MailBox mailbox;
     try {
       mailbox = await NfcSt25.getMailBoxInfo();
-      print("GET MAILBOX INFO" + mailbox.toString());
       //showSnackBar("SUCCESSFUL RESET MAILBOX", false);
       log("GET MAILBOX INFO :\n" + mailbox.toString());
       setState(() {
@@ -133,7 +124,6 @@ class _MyAppState extends State<MyApp> {
         mailBoxInfo = null;
       });
       log("ERRRRORRR get mailbox info" + e.toString());
-      print("ERRRRORRR get mailbox info" + e.toString());
       //showSnackBar("failed to reset mailbox -> " + e.toString(), true);
     }
   }
@@ -142,10 +132,8 @@ class _MyAppState extends State<MyApp> {
     Uint8List msg = Uint8List.fromList([0, 1, 0]);
     try {
       await NfcSt25.writeMailBoxByte(msg);
-      print("SUCCESSFUL SENT " + msg.toString());
       log("SUCCESSFUL SENT " + msg.toString());
     } catch (e) {
-      print("ERRRRORRR writing msg" + e.toString());
       log("failed to write mailbox -> " + e.toString());
     }
   }
