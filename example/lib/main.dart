@@ -12,12 +12,22 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Test",
+      home: ExamplePage(),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class ExamplePage extends StatefulWidget {
+  @override
+  _ExamplePage createState() => _ExamplePage();
+}
+
+class _ExamplePage extends State<ExamplePage> {
   String _platformVersion = 'Unknown';
   bool nfcAvailability = false;
   St25Tag lastTag;
@@ -25,6 +35,11 @@ class _MyAppState extends State<MyApp> {
   Uint8List last_msg;
   String logs = "";
   MailBox mailBoxInfo;
+  List<dynamic> commands = [
+    [0, 1, 0],
+    [0, 1, 1],
+    [0, 1, 2],
+  ];
 
   StreamSubscription<St25Tag> _subscription;
 
@@ -132,8 +147,8 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> writeMailBoxMsg() async {
-    Uint8List msg = Uint8List.fromList([0, 1, 0]);
+  Future<void> writeMailBoxMsg(List<int> data) async {
+    Uint8List msg = Uint8List.fromList(data);
     try {
       await NfcSt25.writeMailBoxByte(msg);
       log("SUCCESSFUL SENT " + msg.toString());
@@ -210,18 +225,51 @@ class _MyAppState extends State<MyApp> {
                 style: TextStyle(color: Colors.white, fontSize: 14.0))
           ]),
       actions: [
-        IconButton(icon: Icon(Icons.cancel), onPressed: () => _invalidateAll())
+        IconButton(icon: Icon(Icons.cancel), onPressed: () => invalidateAll())
       ],
     );
   }
 
-  _invalidateAll() {
+  invalidateAll() {
     log("INVALIDATE DATA");
     setState(() {
       lastTag = null;
       logs = "";
       mailBoxInfo = null;
     });
+  }
+
+  void showWriteDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Select command to send"),
+          content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: commands
+                  .map((e) => RaisedButton(
+                        onPressed: () {
+                          writeMailBoxMsg(e);
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(e.toString()),
+                      ))
+                  .toList()),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -269,12 +317,12 @@ class _MyAppState extends State<MyApp> {
                                     : readMailBoxMsg(),
                           ),
                           RaisedButton(
-                            child: Text("WRITE MAILBOX"),
-                            onPressed: () =>
-                                lastTag.mailBox.mailboxEnabled == false
-                                    ? null
-                                    : writeMailBoxMsg(),
-                          ),
+                              child: Text("WRITE MAILBOX"),
+                              onPressed: () =>
+                                  lastTag.mailBox.mailboxEnabled == false
+                                      ? null
+                                      : showWriteDialog() //writeMailBoxMsg(),
+                              ),
                         ]),
                     SizedBox(height: 25),
                     Text("LOGS"),
