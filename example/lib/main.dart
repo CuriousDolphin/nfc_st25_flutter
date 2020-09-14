@@ -279,13 +279,12 @@ class _MyAppState extends State<MyApp> {
                     SizedBox(height: 25),
                     Text("LOGS"),
                     Container(
-                      height: 300,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[Text(logs)],
-                      ),
-                      color: Colors.grey,
-                    ),
+                        height: 300,
+                        color: Colors.grey,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Text(logs),
+                        )),
                   ],
                 ),
               ),
