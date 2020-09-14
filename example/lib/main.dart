@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  bool nfcAvailability;
+  bool nfcAvailability = false;
   St25Tag lastTag;
   bool loading = false;
   Uint8List last_msg;
@@ -35,7 +35,11 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
-    NfcSt25.nfcAvailability.then((value) => {nfcAvailability = value});
+    NfcSt25.nfcAvailability.then((value) => {
+          setState(() {
+            nfcAvailability = value;
+          })
+        });
     startListen();
   }
 
@@ -153,26 +157,89 @@ class _MyAppState extends State<MyApp> {
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
+  Widget _tapCard() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: nfcAvailability
+          ? Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                  Expanded(
+                      child: Card(
+                          child: Container(
+                              height: 300,
+                              padding: EdgeInsets.all(8),
+                              child: Stack(children: [
+                                Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    child: Text(
+                                      "Please tap a tag !",
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                                Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Icon(
+                                      Icons.nfc,
+                                      size: 128,
+                                      color: Colors.black38,
+                                    ))
+                              ]))))
+                ])
+          : Text("Nfc unavailable."),
+    );
+  }
+
+  Widget _myAppBar() {
+    if (lastTag == null)
+      return AppBar(
+        title: const Text('ST25 nfc plugin example'),
+      );
+
+    return AppBar(
+      title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(lastTag.name),
+            Text(lastTag.uid,
+                style: TextStyle(color: Colors.white, fontSize: 14.0))
+          ]),
+      actions: [
+        IconButton(icon: Icon(Icons.cancel), onPressed: () => _invalidateAll())
+      ],
+    );
+  }
+
+  _invalidateAll() {
+    log("INVALIDATE DATA");
+    setState(() {
+      lastTag = null;
+      logs = "";
+      mailBoxInfo = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: const Text('ST25 nfc plugin example'),
-      ),
+      appBar: _myAppBar(),
       body: lastTag == null
-          ? Center(
-              child: Text(
-                  'Running on: $_platformVersion\n Nfc availability: $nfcAvailability \n PLEASE TAP A NFC TAG. '),
-            )
+          ? _tapCard()
           : Padding(
               padding: EdgeInsets.all(16),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(lastTag.name + ' ' + lastTag.uid),
+                    Text("Description: " + lastTag.description),
+                    Text("Memory size: " + lastTag.memorySize.toString()),
                     SizedBox(height: 25),
                     Text("MAILBOX INFO"),
                     Container(
@@ -214,6 +281,7 @@ class _MyAppState extends State<MyApp> {
                     Container(
                       height: 300,
                       child: ListView(
+                        shrinkWrap: true,
                         children: <Widget>[Text(logs)],
                       ),
                       color: Colors.grey,
