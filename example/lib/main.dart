@@ -69,6 +69,12 @@ class _ExamplePage extends State<ExamplePage> {
     }, onError: (e) => log(e.toString()));
   }
 
+  clearLogs() {
+    setState(() {
+      logs = "";
+    });
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
@@ -97,24 +103,25 @@ class _ExamplePage extends State<ExamplePage> {
   }
 
   Future<void> readMailBoxMsg() async {
-    setState(() {
-      loading = true;
-    });
-
+    int cnt = 0;
     Uint8List msg;
-    try {
-      msg = await NfcSt25.readMailbox;
-      last_msg = msg;
-      log("READ MSG " + msg.length.toString() + "_" + msg.toString());
-    } catch (e) {
-      log("failed to read mailbox -> " + e.toString());
-      setState(() {
-        last_msg = null;
-      });
+    while (cnt < 5) {
+      try {
+        log("Read try #" + cnt.toString());
+        if (cnt > 0) {
+          await Future.delayed(const Duration(milliseconds: 200));
+        }
+        msg = await NfcSt25.readMailbox;
+        last_msg = msg;
+        log("READ MSG (" + msg.length.toString() + ") : " + msg.toString());
+        break;
+      } catch (e) {
+        log("failed read  -> " + e.toString());
+        cnt++;
+      }
     }
 
     setState(() {
-      loading = false;
       last_msg = msg;
     });
   }
@@ -310,12 +317,12 @@ class _ExamplePage extends State<ExamplePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           RaisedButton(
-                            child: Text("READ MAILBOX"),
-                            onPressed: () =>
-                                lastTag.mailBox.mailboxEnabled == false
+                              child: Text("READ MAILBOX"),
+                              onPressed: () => readMailBoxMsg()
+                              /* lastTag.mailBox.mailboxEnabled == false
                                     ? null
-                                    : readMailBoxMsg(),
-                          ),
+                                    : readMailBoxMsg(), */
+                              ),
                           RaisedButton(
                               child: Text("WRITE MAILBOX"),
                               onPressed: () =>
@@ -325,7 +332,15 @@ class _ExamplePage extends State<ExamplePage> {
                               ),
                         ]),
                     SizedBox(height: 25),
-                    Text("LOGS"),
+                    Row(
+                      children: [
+                        Text("LOGS"),
+                        IconButton(
+                          onPressed: () => clearLogs(),
+                          icon: Icon(Icons.clear),
+                        )
+                      ],
+                    ),
                     Container(
                         height: 300,
                         color: Colors.grey,
