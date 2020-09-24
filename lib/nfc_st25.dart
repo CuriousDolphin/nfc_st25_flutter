@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:nfc_st25/utils/nfc_st25_tag.dart';
 
 import 'utils/nfc_st25_tag.dart';
+import 'utils/exceptions.dart';
 
 class NfcSt25 {
   static const MethodChannel _channel = const MethodChannel('nfc_st25');
@@ -24,28 +25,37 @@ class NfcSt25 {
   }
 
   static Future<bool> get nfcAvailability async {
-    final bool availability =
-        await _channel.invokeMethod('checkNfcAvailability');
+    final bool availability = await _channel
+        .invokeMethod('checkNfcAvailability')
+        .catchError((e) => throw (_mapException(e)));
     return availability;
   }
 
   static Future<Uint8List> get readMailbox async {
-    final Uint8List msg = await _channel.invokeMethod('readMailbox');
+    final Uint8List msg = await _channel
+        .invokeMethod('readMailbox')
+        .catchError((e) => throw (_mapException(e)));
     return msg;
   }
 
   static Future<String> resetMailBox() async {
-    final String ris = await _channel.invokeMethod('resetMailbox');
+    final String ris = await _channel
+        .invokeMethod('resetMailbox')
+        .catchError((e) => throw (_mapException(e)));
     return ris;
   }
 
   static Future<MailBox> getMailBoxInfo() async {
-    Map<dynamic, dynamic> map = await _channel.invokeMethod('getMailboxInfo');
+    Map<dynamic, dynamic> map = await _channel
+        .invokeMethod('getMailboxInfo')
+        .catchError((e) => throw (_mapException(e)));
     return MailBox.fromMap(map);
   }
 
   static Future<String> writeMailBoxByte(Uint8List msg) async {
-    final String ris = await _channel.invokeMethod('writeMailbox', msg);
+    final String ris = await _channel
+        .invokeMethod('writeMailbox', msg)
+        .catchError((e) => throw (_mapException(e)));
     return ris;
   }
 
@@ -72,6 +82,8 @@ class NfcSt25 {
         if (!throwOnUserCancel && error is NFCUserCanceledSessionException) {
           return;
         }*/
+
+        error = _mapException(error);
         controller.addError(error);
 
         //controller.close();
@@ -97,4 +109,27 @@ class NfcSt25 {
     }
     return controller.stream;
   }
+}
+
+Exception _mapException(dynamic error) {
+  if (error is PlatformException) {
+    switch (error.code) {
+      case "TAG_NOT_IN_THE_FIELD":
+        error = NfcTagNotInTheFieldException(error.message);
+        break;
+      case "UNABLE_TO_READ_MAILBOX":
+        error = NfcUnableReadMailBoxException(error.message);
+        break;
+      case "UNABLE_TO_GET_INFO":
+        error = NfcUnableGetInfoException(error.message);
+        break;
+      case "ACTION_FAILED":
+        error = NfcActionFailedException(error.message);
+        break;
+
+      default:
+        error = NfcGeneralException(error.message);
+    }
+  }
+  return error;
 }

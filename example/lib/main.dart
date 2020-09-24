@@ -68,7 +68,7 @@ class _ExamplePage extends State<ExamplePage> {
         lastTag = tag;
         mailBoxInfo = tag.mailBox;
       });
-    }, onError: (e) => log(e.toString()));
+    }, onError: (e) => log("error on discovery tag -> " + e.toString()));
   }
 
   clearLogs() {

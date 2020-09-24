@@ -8,3 +8,6 @@ build/
 .vscode/launch.json
 pubspec.lock
 example/pubspec.lock
+.idea/libraries/Flutter_Plugins.xml
+.idea/workspace.xml
+.idea/libraries/Dart_Packages.xml

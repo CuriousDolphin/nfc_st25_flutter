@@ -430,7 +430,6 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
     }
     @Override
     protected void onPostExecute(ActionStatus actionStatus) {
-
       switch(actionStatus) {
         case ACTION_SUCCESSFUL:
           switch (mAction) {
@@ -453,7 +452,6 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
               Log.i("nfc","SUCCESFULL READ MAILBOX INFO "+ mailbox.toString());
               mResult.success(mailbox);
               break;
-
             case WRITE_NDEF_MESSAGE:
               break;
             case READ_MEMORY_SIZE:
@@ -466,10 +464,10 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
         case ACTION_FAILED:
           switch (mAction){
             case GET_INFO:
-              eventError("get info error","failed to get tag info ",null);
+              eventError("UNABLE_TO_GET_INFO","failed to get tag info ",null);
               break;
             case READ_MAIL_BOX:
-              mResult.error("unable to read mailbox",resultStatus.toString(),null);
+              mResult.error("UNABLE_TO_READ_MAILBOX",resultStatus.toString(),null);
               break;
             default:
               // TODO HANDLE ERROR HERE!
@@ -483,7 +481,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
         case TAG_NOT_IN_THE_FIELD:
           Log.i("nfc", "ERROR  " + mAction + " TAG NOT IN THE FIELD");
           if(mAction.equals(Action.GET_INFO))
-            eventError("get info error","failed to get tag info ",null);
+            eventError("TAG_NOT_IN_THE_FIELD","TAG_NOT_IN_THE_FIELD, unable to get info",null);
           else
             mResult.error("TAG_NOT_IN_THE_FIELD","TAG_NOT_IN_THE_FIELD",null);
 
