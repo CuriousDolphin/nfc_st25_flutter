@@ -33,8 +33,10 @@ class _ExamplePage extends State<ExamplePage> {
   St25Tag lastTag;
   bool loading = false;
   Uint8List last_msg;
-  String logs = "";
+  List<String> logs = [];
   MailBox mailBoxInfo;
+  ScrollController _scrollController = new ScrollController();
+
   List<dynamic> commands = [
     [0, 1, 0],
     [0, 1, 1],
@@ -71,7 +73,7 @@ class _ExamplePage extends State<ExamplePage> {
 
   clearLogs() {
     setState(() {
-      logs = "";
+      logs = [];
     });
   }
 
@@ -98,8 +100,21 @@ class _ExamplePage extends State<ExamplePage> {
   void log(String s) {
     print(s);
     setState(() {
-      logs += s + '\n\n';
+      logs.add(s);
     });
+    goBottomLog();
+  }
+
+  goBottomLog() {
+    if (_scrollController.hasClients) {
+      var scrollPosition = _scrollController.position;
+
+      _scrollController.animateTo(
+        scrollPosition.maxScrollExtent + 200,
+        duration: new Duration(milliseconds: 100),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   Future<void> readMailBoxMsg() async {
@@ -149,18 +164,27 @@ class _ExamplePage extends State<ExamplePage> {
       setState(() {
         mailBoxInfo = null;
       });
-      log("ERRRRORRR get mailbox info" + e.toString());
+      log("failed get mailbox info ->" + e.toString());
       //showSnackBar("failed to reset mailbox -> " + e.toString(), true);
     }
   }
 
-  Future<void> writeMailBoxMsg(List<int> data) async {
+  Future<bool> writeMailBoxMsg(List<int> data) async {
     Uint8List msg = Uint8List.fromList(data);
     try {
       await NfcSt25.writeMailBoxByte(msg);
       log("SUCCESSFUL SENT " + msg.toString());
+      return true;
     } catch (e) {
       log("failed to write mailbox -> " + e.toString());
+      return false;
+    }
+  }
+
+  Future<void> writeAndRead(List<int> data) async {
+    bool success = await writeMailBoxMsg(data);
+    if (success) {
+      await readMailBoxMsg();
     }
   }
 
@@ -241,12 +265,12 @@ class _ExamplePage extends State<ExamplePage> {
     log("INVALIDATE DATA");
     setState(() {
       lastTag = null;
-      logs = "";
+      logs = [];
       mailBoxInfo = null;
     });
   }
 
-  void showWriteDialog() {
+  void showWriteDialog(bool read) {
     // flutter defined function
     showDialog(
       context: context,
@@ -259,7 +283,8 @@ class _ExamplePage extends State<ExamplePage> {
               children: commands
                   .map((e) => RaisedButton(
                         onPressed: () {
-                          writeMailBoxMsg(e);
+                          //writeMailBoxMsg(e);
+                          read ? writeAndRead(e) : writeMailBoxMsg(e);
                           Navigator.of(context).pop();
                         },
                         child: Text(e.toString()),
@@ -282,76 +307,115 @@ class _ExamplePage extends State<ExamplePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-      key: _scaffoldKey,
-      appBar: _myAppBar(),
-      body: lastTag == null
-          ? _tapCard()
-          : Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(
+      home: Scaffold(
+        key: _scaffoldKey,
+        appBar: _myAppBar(),
+        body: lastTag == null
+            ? _tapCard()
+            : Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text("Description: " + lastTag.description),
-                    Text("Memory size: " + lastTag.memorySize.toString()),
-                    SizedBox(height: 25),
-                    Text("MAILBOX INFO"),
                     Container(
-                      child: Text(mailBoxInfo.toString()),
-                      color: Colors.grey,
-                    ),
-                    Row(
+                      height: 200,
+                      padding: EdgeInsets.all(8),
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          RaisedButton(
-                            child: Text("MAILBOX INFO"),
-                            onPressed: () => getMailBoxInfo(),
-                          ),
-                          RaisedButton(
-                            child: Text("RESET MAILBOX"),
-                            onPressed: () => resetMailBox(),
+                          Text("Description: " + lastTag.description),
+                          Text("Memory size: " + lastTag.memorySize.toString()),
+                          SizedBox(height: 25),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RaisedButton(
+                                    child: Text("Write and read"),
+                                    onPressed: () => showWriteDialog(
+                                        true) //writeMailBoxMsg(),
+                                    ),
+                                RaisedButton(
+                                    child: Text("Read"),
+                                    onPressed: () => readMailBoxMsg()),
+                                RaisedButton(
+                                    child: Text("Write"),
+                                    onPressed: () => showWriteDialog(
+                                        false) //writeMailBoxMsg(),
+                                    ),
+                              ]),
+                        ],
+                      ),
+                    ),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                              color: Colors.blue,
+                              child: ListTile(
+                                title: Text(
+                                  "MILBOX INFO",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.arrow_downward,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () => getMailBoxInfo(),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.restore,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () => resetMailBox(),
+                                      ),
+                                    ]),
+                              )),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            child: Text(mailBoxInfo.toString()),
+                            color: Colors.black12,
                           ),
                         ]),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          RaisedButton(
-                              child: Text("READ MAILBOX"),
-                              onPressed: () => readMailBoxMsg()
-                              /* lastTag.mailBox.mailboxEnabled == false
-                                    ? null
-                                    : readMailBoxMsg(), */
-                              ),
-                          RaisedButton(
-                              child: Text("WRITE MAILBOX"),
-                              onPressed: () =>
-                                  lastTag.mailBox.mailboxEnabled == false
-                                      ? null
-                                      : showWriteDialog() //writeMailBoxMsg(),
-                              ),
-                        ]),
-                    SizedBox(height: 25),
-                    Row(
-                      children: [
-                        Text("LOGS"),
-                        IconButton(
-                          onPressed: () => clearLogs(),
-                          icon: Icon(Icons.clear),
-                        )
-                      ],
-                    ),
                     Container(
-                        height: 300,
-                        color: Colors.grey,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Text(logs),
+                        color: Colors.blue,
+                        child: ListTile(
+                          //leading: Icon(Icons.code),
+                          title: Text(
+                            "Logs",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          trailing: IconButton(
+                            onPressed: () => clearLogs(),
+                            icon: Icon(
+                              Icons.clear,
+                              color: Colors.white,
+                            ),
+                          ),
                         )),
+                    Expanded(
+                        child: Container(
+                      color: Colors.black12,
+                      child: new ListView.builder(
+                        itemCount: logs.length,
+                        controller: _scrollController,
+                        itemBuilder: (BuildContext ctxt, int index) {
+                          return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [Text(logs[index]), Divider()]));
+                        },
+                      ),
+                    ))
                   ],
                 ),
               ),
-            ),
-    ));
+      ),
+    );
   }
 }
