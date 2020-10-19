@@ -62,7 +62,7 @@ class _ExamplePage extends State<ExamplePage> {
 
   startListen() {
     _subscription = NfcSt25.startReading().listen((tag) {
-      log("TAG FOUND: " + tag.uid);
+      log("[TAG FOUND] : " + tag.uid);
       //showSnackBar("Tag found " + tag.uid, false);
       setState(() {
         lastTag = tag;
@@ -117,28 +117,32 @@ class _ExamplePage extends State<ExamplePage> {
     }
   }
 
-  Future<void> readMailBoxMsg() async {
-    int cnt = 0;
+  Future<Uint8List> readMailBoxMsg() async {
+    int cntError = 0;
     Uint8List msg;
-    while (cnt < 5) {
+    while (cntError < 5) {
       try {
-        log("Read try #" + cnt.toString());
-        if (cnt > 0) {
+        log("Read try #" + cntError.toString());
+        if (cntError > 0) {
           await Future.delayed(const Duration(milliseconds: 200));
         }
         msg = await NfcSt25.readMailbox;
-        last_msg = msg;
         log("READ MSG (" + msg.length.toString() + ") : " + msg.toString());
+        setState(() {
+          last_msg = msg;
+        });
+
+        return msg;
         break;
       } catch (e) {
         log("failed read  -> " + e.toString());
-        cnt++;
+        cntError++;
       }
     }
-
     setState(() {
       last_msg = msg;
     });
+    return null;
   }
 
   Future<void> resetMailBox() async {
@@ -173,18 +177,50 @@ class _ExamplePage extends State<ExamplePage> {
     Uint8List msg = Uint8List.fromList(data);
     try {
       await NfcSt25.writeMailBoxByte(msg);
-      log("SUCCESSFUL SENT " + msg.toString());
+      log("SUCCESS WRITE " + msg.toString());
       return true;
     } catch (e) {
-      log("failed to write mailbox -> " + e.toString());
+      log("failed write -> " + e.toString());
       return false;
     }
   }
 
   Future<void> writeAndRead(List<int> data) async {
+    Uint8List msg;
     bool success = await writeMailBoxMsg(data);
+
     if (success) {
-      await readMailBoxMsg();
+      msg = await readMailBoxMsg();
+      if (msg != null) {
+        setState(() {
+          last_msg = msg;
+        });
+
+        this.showSnackBar(
+            'Send: ' + data.toString() + ' \n' + 'Received: ' + msg.toString(),
+            false);
+      }
+    }
+  }
+
+  Future<void> writeNDEF(String msg) async {
+    try {
+      await NfcSt25.writeNDEFString(msg);
+      log("SUCCESS WRTITE NDEF msg: " + msg);
+    } catch (e) {
+      log("failed write ndef -> " + e.toString());
+      return;
+    }
+  }
+
+  Future<String> readNDEF() async {
+    try {
+      String ris = await NfcSt25.readNDEF();
+      log("SUCCESS read NDEF msg:\n" + ris);
+      return ris;
+    } catch (e) {
+      log("failed write ndef -> " + e.toString());
+      return null;
     }
   }
 
@@ -317,7 +353,7 @@ class _ExamplePage extends State<ExamplePage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Container(
-                      height: 200,
+                      height: 300,
                       padding: EdgeInsets.all(8),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -325,6 +361,7 @@ class _ExamplePage extends State<ExamplePage> {
                         children: [
                           Text("Description: " + lastTag.description),
                           Text("Memory size: " + lastTag.memorySize.toString()),
+                          Text('Last mailbox msg read: ' + last_msg.toString()),
                           SizedBox(height: 25),
                           Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -343,6 +380,15 @@ class _ExamplePage extends State<ExamplePage> {
                                         false) //writeMailBoxMsg(),
                                     ),
                               ]),
+                          RaisedButton(
+                              child: Text("Write NDEF"),
+                              onPressed: () => writeNDEF(
+                                  "Hello from flutter") //writeMailBoxMsg(),
+                              ),
+                          RaisedButton(
+                              child: Text("Read NDEF"),
+                              onPressed: () => readNDEF() //writeMailBoxMsg(),
+                              ),
                         ],
                       ),
                     ),

@@ -35,6 +35,9 @@ import com.st.st25sdk.STException;
 import com.st.st25sdk.STRegister;
 import com.st.st25sdk.TagHelper;
 import com.st.st25sdk.ndef.NDEFMsg;
+import com.st.st25sdk.ndef.NDEFRecord;
+import com.st.st25sdk.ndef.TextRecord;
+import com.st.st25sdk.ndef.UriRecord;
 import com.st.st25sdk.type5.st25dv.ST25DVTag;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +58,6 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
   private ST25DVTag lastTag = null;
   private final int DEFAULT_READER_FLAGS = NfcAdapter.FLAG_READER_NFC_A | NfcAdapter.FLAG_READER_NFC_B | NfcAdapter.FLAG_READER_NFC_F | NfcAdapter.FLAG_READER_NFC_V;
   enum Action {
-    WRITE_NDEF_MESSAGE,
     READ_MEMORY_SIZE,
     READ_FAST_MEMORY,
     WRITE_MAIL_BOX,
@@ -63,6 +65,9 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
     GET_MAILBOX_INFO,
     READ_MAIL_BOX,
     RESET_MAIL_BOX,
+    WRITE_NDEF_MESSAGE,
+
+    READ_NDEF_MESSAGE
 
   };
 
@@ -141,6 +146,13 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
       case "resetMailbox":
         executeAsynchronousAction(Action.RESET_MAIL_BOX,result,null);
         break;
+      case "writeNDEF":
+        executeAsynchronousAction(Action.WRITE_NDEF_MESSAGE,result,call.arguments);
+        break;
+      case "readNDEF":
+        executeAsynchronousAction(Action.READ_NDEF_MESSAGE,result,call.arguments);
+        break;
+
 
       default:
         result.notImplemented();
@@ -293,6 +305,7 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
     // data to write
     Object requestData = null;
     HashMap<String,Boolean> mailbox = null;
+    NDEFMsg ndefMsg = null;
 
 
     HashMap<String, Object> tagMap = new HashMap<>();
@@ -352,6 +365,26 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
 
       try {
         switch (mAction) {
+          case READ_NDEF_MESSAGE:
+            ndefMsg=lastTag.readNdefMessage();
+            result = ActionStatus.ACTION_SUCCESSFUL;
+            break;
+          case WRITE_NDEF_MESSAGE:
+            String str = (String) requestData;
+            // Create a NDEFMsg
+            NDEFMsg ndefMsg = new NDEFMsg();
+            // Create a URI record containing http://www.st.com
+            ///UriRecord uriRecord = new UriRecord(NDEF_RTD_URI_ID_HTTP_WWW, "st.com/st25");
+            TextRecord textRecord = new TextRecord(str);
+            // Add the record to the NDEFMsg
+            // Add the record to the NDEFMsg
+            ndefMsg.addRecord(textRecord);
+            // Write the NDEFMsg into the tag
+            lastTag.writeNdefMessage(ndefMsg);
+            result = ActionStatus.ACTION_SUCCESSFUL;
+            break;
+
+
           case GET_INFO:
             getInfo();
             result = ActionStatus.ACTION_SUCCESSFUL;
@@ -452,7 +485,19 @@ public class NfcSt25Plugin implements FlutterPlugin, MethodCallHandler,ActivityA
               Log.i("nfc","SUCCESFULL READ MAILBOX INFO "+ mailbox.toString());
               mResult.success(mailbox);
               break;
+            case READ_NDEF_MESSAGE:
+              String ris = "";
+              try{
+                ris = ndefMsg.getPayload();
+              }catch(Exception e){
+              }
+              Log.i("nfc", "SUCCESSFUL READ NDEF MSG:  " + ris);
+              mResult.success(ris);
+              break;
+
             case WRITE_NDEF_MESSAGE:
+              Log.i("nfc", "SUCCESSFUL WRITE NDEF STRING MSG:  " + requestData.toString());
+              mResult.success("");
               break;
             case READ_MEMORY_SIZE:
 

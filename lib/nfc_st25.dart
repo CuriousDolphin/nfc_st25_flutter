@@ -59,6 +59,20 @@ class NfcSt25 {
     return ris;
   }
 
+  static Future<String> writeNDEFString(String msg) async {
+    final String ris = await _channel
+        .invokeMethod('writeNDEF', msg)
+        .catchError((e) => throw (_mapException(e)));
+    return ris;
+  }
+
+  static Future<String> readNDEF() async {
+    final String ris = await _channel
+        .invokeMethod('readNDEF')
+        .catchError((e) => throw (_mapException(e)));
+    return ris;
+  }
+
   static void _createTagStream() {
     _tagStream = _eventChannel
         .receiveBroadcastStream()

@@ -8,31 +8,28 @@
   <component name="AndroidLogFilters">
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="89de1355-eb63-4f10-85e9-c9a407b9c756" name="Default Changelist" comment="" />
+    <list default="true" id="89de1355-eb63-4f10-85e9-c9a407b9c756" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_27" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="FavoritesManager">
     <favorites_list name="nfc_st25_flutter_plugin" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="IgnoredFileRootStore">
-    <option name="generatedRoots">
-      <set>
-        <option value="C:\Users\isnob\Documents\workspace\nfc_st25_flutter\.idea" />
-      </set>
-    </option>
-  </component>
   <component name="ProjectId" id="1gdpMLLBHRjPQ9Y5kRpftczdSr9" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -41,12 +38,13 @@
     <property name="ResourceManagerPrefKey.ResourceType" value="MIPMAP" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.17" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.editor" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RecentsManager">
@@ -68,6 +66,7 @@
       <option name="DEPLOY_AS_INSTANT" value="false" />
       <option name="ARTIFACT_NAME" value="" />
       <option name="PM_INSTALL_OPTIONS" value="" />
+      <option name="ALL_USERS" value="false" />
       <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
       <option name="ACTIVITY_EXTRA_FLAGS" value="" />
       <option name="MODE" value="default_activity" />
@@ -103,14 +102,17 @@
       </Native>
       <Profilers>
         <option name="ADVANCED_PROFILING_ENABLED" value="false" />
+        <option name="STARTUP_PROFILING_ENABLED" value="false" />
         <option name="STARTUP_CPU_PROFILING_ENABLED" value="false" />
         <option name="STARTUP_CPU_PROFILING_CONFIGURATION_NAME" value="Sample Java Methods" />
+        <option name="STARTUP_NATIVE_MEMORY_PROFILING_ENABLED" value="false" />
+        <option name="NATIVE_MEMORY_SAMPLE_RATE_BYTES" value="2048" />
       </Profilers>
       <option name="DEEP_LINK" value="" />
       <option name="ACTIVITY_CLASS" value="" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
+      <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
+      <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
+      <method v="2" />
     </configuration>
     <configuration name="Unnamed" type="FlutterRunConfigurationType" factoryName="Flutter" nameIsGenerated="true">
       <option name="filePath" value="$PROJECT_DIR$/example/lib/main.dart" />
@@ -150,13 +152,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="1088" y="530" key="#PSD" timestamp="1598619430093">
@@ -167,10 +168,10 @@
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
     <state x="1506" y="390" key="#Unnamed/0.23.3440.1359@0.23.3440.1359" timestamp="1598619941437" />
-    <state x="1828" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598620019956">
+    <state x="1828" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603102781055">
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
-    <state x="1828" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.3440.1359@0.23.3440.1359" timestamp="1598620019956" />
+    <state x="1828" y="364" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.3440.1359@0.23.3440.1359" timestamp="1603102781055" />
     <state x="2101" y="499" key="#com.intellij.ide.util.TreeFileChooserDialog" timestamp="1598620011163">
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
@@ -179,6 +180,10 @@
       <screen x="0" y="23" width="1440" height="823" />
     </state>
     <state x="451" y="330" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.23.1440.823@0.23.1440.823" timestamp="1598454644364" />
+    <state x="547" y="340" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1603102446810">
+      <screen x="0" y="23" width="3440" height="1359" />
+    </state>
+    <state x="547" y="340" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.23.3440.1359@0.23.3440.1359" timestamp="1603102446810" />
     <state x="2168" y="464" key="AndroidCreateResourceFileDialog" timestamp="1598613536703">
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
@@ -207,16 +212,17 @@
     <state width="1340" height="224" key="GridCell.Tab.0.right/0.0.3440.1400@0.0.3440.1400" timestamp="1599210760074" />
     <state width="1164" height="168" key="GridCell.Tab.0.right/0.23.1440.823@0.23.1440.823" timestamp="1598458880367" />
     <state width="1774" height="314" key="GridCell.Tab.0.right/0.23.3440.1359@0.23.3440.1359" timestamp="1598620233851" />
-    <state x="1865" y="341" key="SettingsEditor" timestamp="1598620042339">
+    <state x="1865" y="341" key="SettingsEditor" timestamp="1603102751541">
       <screen x="0" y="23" width="3440" height="1359" />
     </state>
-    <state x="1865" y="341" key="SettingsEditor/0.23.3440.1359@0.23.3440.1359" timestamp="1598620042339" />
-    <state x="390" y="267" key="com.intellij.ide.util.TipDialog" timestamp="1600963703080">
-      <screen x="0" y="23" width="1440" height="824" />
+    <state x="1865" y="341" key="SettingsEditor/0.23.3440.1359@0.23.3440.1359" timestamp="1603102751541" />
+    <state x="932" y="425" key="com.intellij.ide.util.TipDialog" timestamp="1603102411666">
+      <screen x="0" y="23" width="3440" height="1359" />
     </state>
     <state x="932" y="414" key="com.intellij.ide.util.TipDialog/0.0.3440.1400@0.0.3440.1400" timestamp="1599210714224" />
     <state x="390" y="266" key="com.intellij.ide.util.TipDialog/0.23.1440.821@0.23.1440.821" timestamp="1598859195720" />
     <state x="390" y="267" key="com.intellij.ide.util.TipDialog/0.23.1440.824@0.23.1440.824" timestamp="1600963703080" />
+    <state x="932" y="425" key="com.intellij.ide.util.TipDialog/0.23.3440.1359@0.23.3440.1359" timestamp="1603102411666" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
